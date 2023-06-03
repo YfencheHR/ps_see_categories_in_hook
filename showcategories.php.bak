@@ -1,0 +1,32 @@
+<?php
+class ShowCategories extends Module
+{
+    public function __construct()
+    {
+        $this->name = 'ShowCategories';
+        $this->tab = 'front_office_features';
+        $this->version = '1.0';
+        $this->author = 'Yfenche h.r.';
+        $this->need_instance = 0;
+
+        parent::__construct();
+
+        $this->displayName = $this->l('ShowCategories');
+        $this->description = $this->l('Mostrar categorias.');
+
+        $this->ps_versions_compliancy = array('min' => '1.7', 'max' => _PS_VERSION_);
+    }
+
+    public function install()
+    {
+        return parent::install() &&
+            $this->registerHook('displayHome');
+    }
+
+    public function hookDisplayHome($params)
+    {
+        $categories = Category::getCategories(Context::getContext()->language->id, true, false);
+        $this->context->smarty->assign('categories', $categories);
+        return $this->display(__FILE__, 'views/templates/hook/show_categories.tpl');
+    }
+}
